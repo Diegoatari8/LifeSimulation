@@ -6,7 +6,7 @@
 
 -Genders (Male,Female)
 
--Sexuality (Hetero,Homo,Bi)
+-Sexuality (Hetero,Homo,Bi) 
 
 -Atractiveness (Chance of making a couple and reproducing)
 
