@@ -21,7 +21,7 @@ public class LifeEntity : MonoBehaviour
 
     int gend;
     public Sexuality sexuality;
-    int sexu;
+    float sexu;
     public Color color;
     public int age;
     int deathChance;
@@ -60,21 +60,20 @@ public class LifeEntity : MonoBehaviour
         {
             gender = Gender.Female;
         }
-        //Sets a random sexuality when spawned
+        //Sets a random sexuality when spawned. (Chances are: 66.66% Hetero,33.33% Homo and 33.33% Bi)
         sexu = Random.Range(0, 3);
-        if (sexu == 0)
+        if (sexu < 2f)
         {
             sexuality = Sexuality.Hetero;
         }
-        if (sexu == 1)
-        {
-            sexuality = Sexuality.Homo;
-        }
-        if (sexu == 2)
+        if (sexu >2f && sexu< 2.5f)
         {
             sexuality = Sexuality.Bi;
         }
-        
+        if (sexu >= 2.5f)
+        {
+            sexuality = Sexuality.Homo;
+        }
 
         //Define values;
         agent = GetComponent<NavMeshAgent>();
@@ -88,7 +87,11 @@ public class LifeEntity : MonoBehaviour
 
     // Update is called once per frame
     void FixedUpdate()
-    { //Only can couple after 14 simulation years (6 real life seconds)
+    {
+        //Set entity size according to age
+        transform.localScale = Vector3.one * 0.33f + Vector3.one * age/40;
+        
+        //Only can couple after 14 simulation years (6 real life seconds)
         if (age > 14)
         {
             collider.enabled = true;
@@ -110,37 +113,38 @@ public class LifeEntity : MonoBehaviour
         {
             agent.SetDestination(transform.position);
             babyTimer += 0.02f;
-
-        }
-        //Reproduces if genders are different. There is a 10% chance to break up the relationship.
-        if (babyTimer > 2f)
-        {
-            babyTimer = 0;
-            if (gender != couple.gender)
+            if (babyTimer > 2f)
             {
-                if (gender == Gender.Female)
+                babyTimer = 0;
+                //Reproduces if genders are different
+                if (gender != couple.gender)
                 {
-                    LifeManager.Spawn(transform.position, mentalHealth, couple.mentalHealth,attractive,couple.attractive, color, couple.color, this.gameObject);
-                  //If reproduced successfully there is a 5% chance (if mental health of the couple is 100%) to die after giving birth.
-                    if (Random.Range(0, couple.mentalHealth) < 5)
+                    if (gender == Gender.Female)
                     {
-                        Die();
+                        LifeManager.Spawn(transform.position, mentalHealth, couple.mentalHealth, attractive, couple.attractive, color, couple.color, this.gameObject);
+                        //If reproduced successfully there is a 5% chance (if mental health of the couple is 100%) to die after giving birth.
+                        if (Random.Range(0, couple.mentalHealth) < 5)
+                        {
+                            Die();
+                        }
                     }
+
+                }
+                //There is a 10% chance (if mental health is 100%) of breaking up the couple.
+                if (Random.Range(0, mentalHealth) < 10)
+                {
+
+                    couple.couple = null;
+                    couple.isCoupled = false;
+                    couple = null;
+                    isCoupled = false;
                 }
 
+
             }
-            //There is a 10% chance (if mental health is 100%) of breaking up the couple.
-            if (Random.Range(0, mentalHealth) < 10)
-            {
-
-                couple.couple = null;
-                couple.isCoupled = false;
-                couple = null;
-                isCoupled = false;
-            }
-
-
         }
+      
+
         //Aging
         ageTimer += 0.02f;
         if (ageTimer > 0.5f)
@@ -165,7 +169,7 @@ public class LifeEntity : MonoBehaviour
          //If genders and sexualities are compatible continue
             if (CheckGenderComp(this, other))
             {//If attraction average is higher than a random number,then couple
-                if (Random.Range(0, 100) <= Mathf.Lerp(attractive, collision.gameObject.GetComponent<LifeEntity>().attractive, 0.5f))
+                if (Random.Range(0, 50) <= Mathf.Lerp(attractive, collision.gameObject.GetComponent<LifeEntity>().attractive, 0.5f))
                 {
                     collision.gameObject.GetComponent<LifeEntity>().couple = this;
                     collision.gameObject.GetComponent<LifeEntity>().isCoupled = true;
