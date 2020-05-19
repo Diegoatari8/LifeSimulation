@@ -38,9 +38,12 @@ public class LifeEntity : MonoBehaviour
     bool isCoupled;
     float babyTimer;
     public GameObject Mother;
+    TrailRenderer trail;
     // Start is called before the first frame update
     void Start()
-    { //If entity does not have parents to get their values averaged as variables,set random ones.
+    {
+        trail = GetComponentInChildren<TrailRenderer>();
+        //If entity does not have parents to get their values averaged as variables,set random ones.
         if (Mother == null)
         {
             mentalHealth = Random.Range(1, 100);
@@ -48,8 +51,15 @@ public class LifeEntity : MonoBehaviour
             color = new Color32((byte)Random.Range(0, 255), (byte)Random.Range(0, 255), (byte)Random.Range(0, 255), (byte)255);
 
         }
-     
-        deathChance = Random.Range(40, 90);
+        trail.startColor = color;
+        trail.endColor = color;
+        deathChance = Random.Range(30, 100);
+
+        //Chance to die on birth
+        if (Random.Range(0, 100) < 1)
+        {
+            Die();
+        }
         //Sets a random gender when spawned
         gend = Mathf.RoundToInt(Random.Range(0, 100));
         if (gend > 50)
@@ -90,7 +100,7 @@ public class LifeEntity : MonoBehaviour
     {
         //Set entity size according to age
         transform.localScale = Vector3.one * 0.33f + Vector3.one * age/40;
-        
+        trail.widthMultiplier = .35f + age / 40;
         //Only can couple after 14 simulation years (6 real life seconds)
         if (age > 14)
         {
@@ -113,7 +123,7 @@ public class LifeEntity : MonoBehaviour
         {
             agent.SetDestination(transform.position);
             babyTimer += 0.02f;
-            if (babyTimer > 2f)
+            if (babyTimer > 3f)
             {
                 babyTimer = 0;
                 //Reproduces if genders are different
@@ -151,7 +161,7 @@ public class LifeEntity : MonoBehaviour
         {
             ageTimer = 0;
             age++;
-            if (age > 40)
+            if (age > 30)
             { //The higher the age,the higher the chance to die depending on the random deathChance value.
                 if (Random.Range(0, age) > deathChance)
                 {

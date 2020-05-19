@@ -1729,7 +1729,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 520220865}
   m_Direction: 0
   m_MinValue: 1
-  m_MaxValue: 10
+  m_MaxValue: 30
   m_WholeNumbers: 0
   m_Value: 1
   m_OnValueChanged:
@@ -3555,7 +3555,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
