@@ -46,8 +46,8 @@ public class LifeEntity : MonoBehaviour
         //If entity does not have parents to get their values averaged as variables,set random ones.
         if (Mother == null)
         {
-            mentalHealth = Random.Range(1, 100);
-            attractive = Random.Range(1, 100);
+            mentalHealth = Random.Range(25, 100);
+            attractive = Random.Range(25, 100);
             color = new Color32((byte)Random.Range(0, 255), (byte)Random.Range(0, 255), (byte)Random.Range(0, 255), (byte)255);
 
         }
